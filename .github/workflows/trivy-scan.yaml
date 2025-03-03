@@ -1,0 +1,28 @@
+name: Docker Image Security Scan
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  security_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download and install Trivy
+        run: |
+          curl -s https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo bash
+          sudo mv ./bin/trivy /usr/local/bin/trivy  
+          trivy --version  
+
+      - name: Pull Docker Image from Docker Hub
+        run: |
+          docker pull nginx:latest  # Replace with your image
+
+      - name: Scan Docker Image with Trivy
+        run: |
+          trivy image nginx:latest  # Replace with your image
